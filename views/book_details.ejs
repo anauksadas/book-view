@@ -75,11 +75,15 @@
               <!-- Amazon Button -->
 
               <!-- Assuming you have bookInfo.industryIdentifiers containing the ISBN-13 -->
-              <% const amazonUrl = `https://www.amazon.com/dp/${bookInfo.volumeInfo.industryIdentifiers.find(identifier => identifier.type === 'ISBN_13').identifier}` %>
+              <!-- <% const amazonUrl = `https://www.amazon.com/dp/${bookInfo.volumeInfo.industryIdentifiers.find(identifier => identifier.type === 'ISBN_13').identifier}` %> -->
               
-              <a href="<%= amazonUrl %>" target="_blank">
-                <button class="button buy-btn" >Buy on Amazon</button>
-              </a>
+
+              <% if (bookInfo.saleInfo.buyLink) { %>
+                <a href="<%= bookInfo.saleInfo.buyLink %>" target="_blank">
+                  <button class="button buy-btn">Buy eBook</button>
+                </a>
+              <% } %>
+              
               
             </div>
 
