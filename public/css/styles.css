@@ -363,7 +363,9 @@ button{
 
 .contact-us{
     display: flex;
-    background-color: #F5F5F5;
+    margin: 0;
+    background-color: white;
+    
 }
 .contact-us img{
     align-self: flex-start;
@@ -389,8 +391,8 @@ button{
     color:rgb(98, 95, 95);
 }
 .footer{
-    background-color: #D7C0AE;
-    
+    background-color: antiquewhite;
+
 }
 
 
