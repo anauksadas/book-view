@@ -53,7 +53,7 @@ button{
 /* Home */
 .home{
     position: relative;
-    height: 100vh;
+    height: 95vh;
     width: 100%;
     background-image: url('../images/annie-spratt-FveJVZScEWg-unsplash.jpg');
     background-size: cover ;
@@ -339,4 +339,58 @@ button{
 .buy-btn{
     background-color: #3F2305;
 }
+
+/* About Section */
+.about-container{
+    background-color:#D7C0AE;
+}
+.about-us{
+   padding: 50px 15px; 
+   background-color: antiquewhite;
+}
+.about-us p{
+    padding: 15px 0;
+    font-size: 20px;
+}
+.contact-text h2,
+.about-us h2{
+    text-decoration: underline;
+    font-family: 'Dancing Script', cursive;
+    padding-bottom: 15px;
+}
+
+/* Contact Section */
+
+.contact-us{
+    display: flex;
+    background-color: #F5F5F5;
+}
+.contact-us img{
+    align-self: flex-start;
+
+}
+.contact-text{
+    padding:20px;
+    font-size: 20px;
+    margin-left: 20px;
+    margin-top: 50px;
+}
+.ph-no i,
+.ph-no p{
+    color:rgb(98, 95, 95);
+}
+.email-add,
+.ph-no{
+    display: flex;
+    column-gap: 10px;
+}
+.ph-np i,
+.email-add p{
+    color:rgb(98, 95, 95);
+}
+.footer{
+    background-color: #D7C0AE;
+    
+}
+
 

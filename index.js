@@ -39,7 +39,7 @@ app.get('/book_details', function(req,res){
 
 main().catch(err => console.log(err));
 async function main(){
-    mongoose.connect('mongodb://127.0.0.1:27017/bookviewDB');
+    mongoose.connect(`${process.env.DB_CONNECTION_STRING}/bookviewDB`);
     const userSchema = new mongoose.Schema({
         fullName: String,
         email: String,
@@ -54,7 +54,7 @@ async function main(){
             // Store hash in your password DB.
             const newUser = new User({
                 fullName: req.body.fullName,
-                email: req.body.username,
+                email: req.body.email,
                 password: hash
             })
             newUser.save()
@@ -67,16 +67,16 @@ async function main(){
     })
 
     app.post('/login', function(req,res){
-
+        console.log(req.body.email);
         const email = req.body.email;
-        const password = (req.body.password);
+        const password = req.body.password;
         User.findOne({email: email})
         .then(function(foundUser){
             if(foundUser){
 
                 bcrypt.compare(password, foundUser.password, function(err, result) {
-                    if (result) {
-                        res.render('search', { error: null });
+                    if (result===true) {
+                        res.render('search', {error: null});
                     } else {
                         console.log("Password comparison failed");
                     }
@@ -116,6 +116,7 @@ app.post('/search', function(req, res){
     axios.get(bookUrl)
         .then(response => {
             const data = response.data;
+            //console.log(data);
 
             if(data.totalItems === 0){
                 res.render('search', {error: "No results! Try again."});
@@ -138,10 +139,11 @@ app.post('/search', function(req, res){
 app.get('/book_details/:id', function (req, res) {
 
     const bookId = req.params.id;
-  
-    axios.get(`${GOOGLE_BOOKS_API_URL}/${bookId}`)
+    
+    axios.get(`${GOOGLE_BOOKS_API_URL}/${bookId}?key=${process.env.GOOGLE_BOOKS_API_KEY}`)
       .then(response => {
         const bookInfo = (response.data);
+        //console.log(bookInfo)
 
         if(!bookInfo){
             res.render('search', { error: 'Book not found.' });
