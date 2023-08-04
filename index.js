@@ -5,8 +5,11 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const axios = require('axios');
 require('dotenv').config();
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
+//const bcrypt = require('bcrypt');
+//const saltRounds = 10;
+const session = require('express-session');
+const passport = require('passport');
+const passportLocalMongoose = require('passport-local-mongoose');
 
   
 
@@ -25,9 +28,7 @@ app.get('/', function(req,res){
     res.render('home');
 })
 
-app.get('/search', function(req,res){
-    res.render('search', {error: null});
-})
+
 
 app.get('/contents', function(req,res){
     res.render('contents', {bookList: null});
@@ -39,56 +40,123 @@ app.get('/book_details', function(req,res){
 
 main().catch(err => console.log(err));
 async function main(){
+
+    app.use(session({
+        secret: `${process.env.SECRET}`,
+        resave: false,
+        saveUninitialized: false
+    }));
+    app.use(passport.initialize());
+    app.use(passport.session());
+    
+    
+    
+    
     mongoose.connect(`${process.env.DB_CONNECTION_STRING}/bookviewDB`);
     const userSchema = new mongoose.Schema({
         fullName: String,
-        email: String,
+        username: String,
         password: String
     });
+    userSchema.plugin(passportLocalMongoose);
 
     const User = new mongoose.model("User", userSchema);
 
+    passport.use(User.createStrategy());
+    // passport.use(new LocalStrategy({
+    //     usernameField: 'email',
+    //   },User.authenticate()));
+    passport.serializeUser(User.serializeUser());
+    passport.deserializeUser(User.deserializeUser());
+
+    app.get('/search', function(req,res){
+        if(req.isAuthenticated()){
+            res.render('search', {error: null});
+        }
+        else{
+            res.redirect("/");
+
+        }
+    })
+
     app.post('/signup', function(req,res){
         
-        bcrypt.hash(req.body.pw1, saltRounds, function(err, hash) {
-            // Store hash in your password DB.
-            const newUser = new User({
-                fullName: req.body.fullName,
-                email: req.body.email,
-                password: hash
-            })
-            newUser.save()
-            .then(function(err){
-                res.render('search', {error: null});
-            })
-        });
-
-        
-    })
-
-    app.post('/login', function(req,res){
-        console.log(req.body.email);
-        const email = req.body.email;
+        // bcrypt.hash(req.body.pw1, saltRounds, function(err, hash) {
+        //     // Store hash in your password DB.
+        //     const newUser = new User({
+        //         fullName: req.body.fullName,
+        //         email: req.body.email,
+        //         password: hash
+        //     })
+        //     newUser.save()
+        //     .then(function(err){
+        //         res.render('search', {error: null});
+        //     })
+        // });
+        const fullName = req.body.fullName;
+        const username = req.body.username;
         const password = req.body.password;
-        User.findOne({email: email})
-        .then(function(foundUser){
-            if(foundUser){
 
-                bcrypt.compare(password, foundUser.password, function(err, result) {
-                    if (result===true) {
-                        res.render('search', {error: null});
-                    } else {
-                        console.log("Password comparison failed");
-                    }
-                    
-                });
-
-
-    
-                
+        User.register({username: username, fullName}, password, function(err, user){
+            if(err){
+                console.log(username);
+                res.redirect('/');
+            }else{
+                passport.authenticate("local")(req, res, function(){
+                    res.redirect("/search");
+                })
             }
         })
-        .catch(err => console.log(err));
+
+        
+        
+    });
+
+    app.post('/login', function(req,res){
+        
+        // const email = req.body.email;
+        // const password = req.body.password;
+        // User.findOne({email: email})
+        // .then(function(foundUser){
+        //     if(foundUser){
+
+        //         bcrypt.compare(password, foundUser.password, function(err, result) {
+        //             if (result===true) {
+        //                 res.render('search', {error: null});
+        //             } else {
+        //                 console.log("Password comparison failed");
+        //             }
+                    
+        //         }); 
+                
+        //     }
+        // })
+        // .catch(err => console.log(err));
+
+        const user = new User({
+            username: req.body.username,
+            password: req.body.password
+        });
+        req.login(user, function(err){
+            if(err){
+                console.log(err);
+            }
+            else{
+                passport.authenticate("local")(req,res, function(){
+                    res.redirect("/search");
+                })
+            }
+        })
+
+    })
+
+    app.get('/logout', function(req,res){
+        req.logout(function(err){
+            if(err){
+                console.log(err);
+            }
+        })
+        res.redirect('/');
     })
 
 
@@ -96,9 +164,7 @@ async function main(){
 
 
 
-
-
-}
+};
 
 // Search route
 
@@ -161,9 +227,6 @@ app.get('/book_details/:id', function (req, res) {
         res.render('search', { error: 'An error occurred while fetching book information.' });
       });
   });
-
-
-
 
 
 

@@ -36,6 +36,9 @@
         </ul>
 
         <button class="button login-btn" id="form-open">Login</button>
+        
+        <a href="/logout" class="button logout-btn" role="button">Logout</a>
+        
       </nav>
     </header>
 
@@ -54,21 +57,24 @@
               <h6>Author: <%= bookInfo.volumeInfo.authors?.join(', ') %></h6>
               <p>Published Date: <%= bookInfo.volumeInfo.publishedDate %></p>
               <p>Page Count: <%= bookInfo.volumeInfo.pageCount %></p>
+              <p>Categories: <%= bookInfo.volumeInfo.categories %></p>
               <p>Maturity Rating: <%= bookInfo.volumeInfo.maturityRating %></p>
-              <!-- Add more book details here -->
-      
-              <h2>Description:</h2>
-              <p><%= (bookInfo.volumeInfo.description) %></p>
-      
-              <!-- Error here -->
               <% if (bookInfo.saleInfo?.retailPrice) { %>
-                <h2>Retail Price: </h2>
+                
                 <% if (bookInfo.saleInfo.retailPrice.currencyCode && bookInfo.saleInfo.retailPrice.amount) { %>
                   <p>Price: <%= bookInfo.saleInfo.retailPrice.currencyCode + ' ' + bookInfo.saleInfo.retailPrice.amount %></p>
                 <% } else { %>
                   <p>Price: N/A</p>
                 <% } %>
               <% } %>
+
+              <!-- Add more book details here -->
+      
+              <h2>Description:</h2>
+              <p><%= (bookInfo.volumeInfo.description) %></p>
+      
+              <!-- Error here -->
+              
               
               
              
