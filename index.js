@@ -143,7 +143,7 @@ app.get('/book_details/:id', function (req, res) {
     axios.get(`${GOOGLE_BOOKS_API_URL}/${bookId}?key=${process.env.GOOGLE_BOOKS_API_KEY}`)
       .then(response => {
         const bookInfo = (response.data);
-        //console.log(bookInfo)
+        
 
         if(!bookInfo){
             res.render('search', { error: 'Book not found.' });

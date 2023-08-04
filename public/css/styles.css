@@ -386,7 +386,7 @@ button{
     display: flex;
     column-gap: 10px;
 }
-.ph-np i,
+.email-add i,
 .email-add p{
     color:rgb(98, 95, 95);
 }

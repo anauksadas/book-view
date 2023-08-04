@@ -54,14 +54,26 @@
               <h6>Author: <%= bookInfo.volumeInfo.authors?.join(', ') %></h6>
               <p>Published Date: <%= bookInfo.volumeInfo.publishedDate %></p>
               <p>Page Count: <%= bookInfo.volumeInfo.pageCount %></p>
+              <p>Maturity Rating: <%= bookInfo.volumeInfo.maturityRating %></p>
               <!-- Add more book details here -->
       
               <h2>Description:</h2>
               <p><%= (bookInfo.volumeInfo.description) %></p>
       
-              <!-- Add more book details here -->
+              <!-- Error here -->
+              <% if (bookInfo.saleInfo?.retailPrice) { %>
+                <h2>Retail Price: </h2>
+                <% if (bookInfo.saleInfo.retailPrice.currencyCode && bookInfo.saleInfo.retailPrice.amount) { %>
+                  <p>Price: <%= bookInfo.saleInfo.retailPrice.currencyCode + ' ' + bookInfo.saleInfo.retailPrice.amount %></p>
+                <% } else { %>
+                  <p>Price: N/A</p>
+                <% } %>
+              <% } %>
+              
+              
+             
       
-              <!-- Example: Display Google Reviews -->
+              <!--  Display Google Reviews -->
               <% if (bookInfo.volumeInfo?.averageRating) { %>
                 <h2>Google Reviews:</h2>
                 <p>Average Rating: <%= bookInfo.volumeInfo.averageRating %></p>
@@ -69,13 +81,10 @@
               <% } else { %>
                 <p>No Google Reviews available.</p>
               <% } %>
+              
       
-              <!-- Add more book details here -->
-
-              <!-- Amazon Button -->
-
-              <!-- Assuming you have bookInfo.industryIdentifiers containing the ISBN-13 -->
-              <!-- <% const amazonUrl = `https://www.amazon.com/dp/${bookInfo.volumeInfo.industryIdentifiers.find(identifier => identifier.type === 'ISBN_13').identifier}` %> -->
+              
+              
               
 
               <% if (bookInfo.saleInfo.buyLink) { %>
@@ -93,3 +102,5 @@
           
     </div>
     </div>
+
+    <%- include('./partials/footer.ejs') %>
